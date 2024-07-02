@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .socket-info {
+            margin-bottom: 20px;
+        }
+        .room-list {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket.IO Admin Panel</h1>
+    <div id="socket-container"></div>
+
+    <script>
+        async function fetchSocketInfo() {
+            const response = await fetch('/socket-info');
+            const data = await response.json();
+            const socketContainer = document.getElementById('socket-container');
+            socketContainer.innerHTML = '';
+
+            for (const [socketId, info] of Object.entries(data)) {
+                const socketDiv = document.createElement('div');
+                socketDiv.className = 'socket-info';
+                socketDiv.innerHTML = `
+                    <h3>Socket ID: ${socketId}</h3>
+                    <div class="room-list">
+                        <strong>Rooms:</strong>
+                        <ul>
+                            ${info.rooms.map(room => `<li>${room}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                socketContainer.appendChild(socketDiv);
+            }
+        }
+
+        setInterval(fetchSocketInfo, 2000);
+    </script>
+</body>
+</html>
